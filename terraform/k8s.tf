@@ -100,8 +100,8 @@ resource "kubernetes_pod" "pod" {
 
       resources {
         requests {
-          cpu    = "1000m"
-          memory = "1Gi"
+          cpu    = "500m"
+          memory = "512Mi"
         }
       }
 
@@ -147,4 +147,8 @@ resource "kubernetes_service" "service" {
       protocol    = "TCP"
     }
   }
+}
+
+output "url" {
+  value = "https://${google_compute_address.address.address}"
 }
