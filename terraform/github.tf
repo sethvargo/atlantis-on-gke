@@ -16,6 +16,7 @@ resource "github_repository" "repo" {
   has_issues    = false
   has_wiki      = false
   has_downloads = false
+  has_projects  = false
 
   allow_merge_commit = false
   allow_squash_merge = false
@@ -47,5 +48,5 @@ resource "github_repository_webhook" "hook" {
 }
 
 output "repository" {
-  value = "${github_repository.repo.http_clone_url}"
+  value = "${github_repository.repo.html_url}"
 }
