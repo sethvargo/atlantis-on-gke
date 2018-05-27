@@ -60,11 +60,13 @@ variable "google_account_email" {
 }
 
 variable "github_token" {
-  type = "string"
+  type        = "string"
+  description = "GitHub token with permissions to create the demo repo."
 }
 
 variable "github_organization" {
-  type = "string"
+  type        = "string"
+  description = "GitHub organization to create demo repo in. Won't work with a personal account."
 }
 
 variable "atlantis_version" {
@@ -72,10 +74,17 @@ variable "atlantis_version" {
   default = "latest"
 }
 
-variable "atlantis_user" {
-  type = "string"
+variable "atlantis_github_user" {
+  type        = "string"
+  description = "GitHub username for Atlantis."
 }
 
-variable "atlantis_user_token" {
-  type = "string"
+variable "atlantis_github_user_token" {
+  type        = "string"
+  description = "GitHub token for Atlantis user."
+}
+
+variable "atlantis_repo_whitelist" {
+  type        = "string"
+  description = "Whitelist for what repos Atlantis will operate on, ex. github.com/sethvargo-demos/*"
 }

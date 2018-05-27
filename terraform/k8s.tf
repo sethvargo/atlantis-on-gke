@@ -65,12 +65,12 @@ resource "kubernetes_pod" "pod" {
 
       env {
         name  = "ATLANTIS_GH_USER"
-        value = "${var.atlantis_user}"
+        value = "${var.atlantis_github_user}"
       }
 
       env {
         name  = "ATLANTIS_GH_TOKEN"
-        value = "${var.atlantis_user_token}"
+        value = "${var.atlantis_github_user_token}"
       }
 
       env {
@@ -80,7 +80,7 @@ resource "kubernetes_pod" "pod" {
 
       env {
         name  = "ATLANTIS_REPO_WHITELIST"
-        value = "github.com/sethvargo-demos/*"
+        value = "${var.atlantis_repo_whitelist}"
       }
 
       env {

@@ -1,6 +1,6 @@
 # Atlantis on GKE with Terraform
 
-These Terraform configuration provision an [Atlantis][atlantis] cluster on
+These Terraform configurations provision an [Atlantis][atlantis] cluster on
 [Google Kubernetes Engine][gke] using [HashiCorp Terraform][terraform] as the
 provisioning tool.
 
@@ -18,8 +18,15 @@ provisioning tool.
   needed.
 
 - **Automatic GitHub Repo Creation & Configuration** - Automatically creates a
-  dedicated GitHub repository with the Atlantis webhook configured
+  dedicated private GitHub repository with the Atlantis webhook configured
   automatically.
+
+## Requirements
+1. A GCP Organization (see https://cloud.google.com/resource-manager/docs/quickstart-organizations)
+because these configurations create a new project which (through Terraform) must be associated with an
+organization.
+2. A GitHub Organization (not a personal account) because the Terraform GitHub provider
+does not yet support personal accounts: https://github.com/terraform-providers/terraform-provider-github/issues/45
 
 ## Tutorial
 
@@ -123,3 +130,4 @@ limitations under the License.
 [gcs]: https://cloud.google.com/storage
 [gke]: https://cloud.google.com/kubernetes-engine
 [terraform]: https://www.terraform.io
+[sdk]: https://cloud.google.com/sdk/
