@@ -100,6 +100,13 @@ organization.
 ## Cleaning Up
 
 ```
+$ cd terraform/
+
+# If you ran locally
+$ unset GOOGLE_PROJECT
+$ unset GOOGLE_ENCRYPTION_KEY
+$ unset GOOGLE_CREDENTIALS
+
 $ terraform destroy
 ```
 

@@ -5,12 +5,12 @@ resource "null_resource" "demo" {
     encryption_key        = "${md5(random_id.encryption-key.b64_std)}"
   }
 
-  provisioner "local-exec" {
-    depends_on = [
-      "google_project_iam_member.service-account",
-      "google_storage_bucket_iam_member.sa-to-bucket",
-    ]
+  depends_on = [
+    "google_project_iam_member.service-account",
+    "google_storage_bucket_iam_member.sa-to-bucket",
+  ]
 
+  provisioner "local-exec" {
     command = <<EOF
 cat > ../demo/credentials.json <<"EOH"
 ${base64decode(google_service_account_key.key.private_key)}
