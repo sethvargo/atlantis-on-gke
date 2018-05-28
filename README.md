@@ -18,15 +18,17 @@ provisioning tool.
   needed.
 
 - **Automatic GitHub Repo Creation & Configuration** - Automatically creates a
-  dedicated private GitHub repository with the Atlantis webhook configured
+  dedicated (private) GitHub repository with the Atlantis webhook configured
   automatically.
 
 ## Requirements
-1. A GCP Organization (see https://cloud.google.com/resource-manager/docs/quickstart-organizations)
+
+1. A [Google Cloud Organization](https://cloud.google.com/resource-manager/docs/quickstart-organizations)
 because these configurations create a new project which (through Terraform) must be associated with an
 organization.
-2. A GitHub Organization (not a personal account) because the Terraform GitHub provider
-does not yet support personal accounts: https://github.com/terraform-providers/terraform-provider-github/issues/45
+
+1. A GitHub Organization (not a personal account) because the Terraform GitHub provider
+[does not support personal accounts](https://github.com/terraform-providers/terraform-provider-github/issues/45)
 
 ## Tutorial
 

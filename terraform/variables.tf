@@ -69,6 +69,13 @@ variable "github_organization" {
   description = "GitHub organization to create demo repo in. Won't work with a personal account."
 }
 
+variable "github_repo_is_private" {
+  type    = "string"
+  default = "true"
+
+  description = "Whether the GitHub repository is private."
+}
+
 variable "atlantis_version" {
   type    = "string"
   default = "latest"
