@@ -12,8 +12,18 @@ resource "null_resource" "demo" {
 
   provisioner "local-exec" {
     command = <<EOF
+rm -rf ../demo
+mkdir -p ../demo
+
 cat > ../demo/credentials.json <<"EOH"
 ${base64decode(google_service_account_key.key.private_key)}
+EOH
+
+cat > ../demo/.gitignore <<"EOH"
+.terraform
+credentials.json
+env.sh
+terraform.tfstate*
 EOH
 
 cat > ../demo/env.sh <<"EOH"
