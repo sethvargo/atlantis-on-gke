@@ -12,7 +12,7 @@ resource "github_repository" "repo" {
   description  = "Terraform Atlantis Demo"
   homepage_url = "https://www.runatlantis.io/"
 
-  private       = false
+  private       = true
   has_issues    = false
   has_wiki      = false
   has_downloads = false
