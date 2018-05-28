@@ -98,6 +98,11 @@ resource "kubernetes_pod" "pod" {
         value = "${random_id.encryption-key.b64_std}"
       }
 
+      env {
+        name  = "GOOGLE_PROJECT"
+        value = "${google_project.project.name}"
+      }
+
       resources {
         requests {
           cpu    = "500m"

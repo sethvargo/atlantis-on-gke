@@ -80,7 +80,7 @@ organization.
 1. Make a change
 
     ```
-    n1-standard-1 -> n1-standard-1
+    n1-standard-1 -> n1-standard-2
     ```
 
 1. Open a Pull Request with the changes on a new branch

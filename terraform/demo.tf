@@ -6,6 +6,11 @@ resource "null_resource" "demo" {
   }
 
   provisioner "local-exec" {
+    depends_on = [
+      "google_project_iam_member.service-account",
+      "google_storage_bucket_iam_member.sa-to-bucket",
+    ]
+
     command = <<EOF
 cat > ../demo/credentials.json <<"EOH"
 ${base64decode(google_service_account_key.key.private_key)}
@@ -73,6 +78,7 @@ cd ../demo
 
 GOOGLE_ENCRYPTION_KEY="${random_id.encryption-key.b64_std}" \
 GOOGLE_CREDENTIALS="credentials.json" \
+GOOGLE_PROJECT="${google_project.project.name}" \
 terraform init
 
 rm -rf .git
