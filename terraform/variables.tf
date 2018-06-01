@@ -47,7 +47,7 @@ variable "storage_bucket_roles" {
 
 variable "kubernetes_version" {
   type    = "string"
-  default = "1.9.6-gke.1"
+  default = "1.10.2-gke.3"
 }
 
 variable "num_servers" {
