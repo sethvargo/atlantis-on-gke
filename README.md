@@ -71,8 +71,8 @@ organization.
 1. Run some commands
 
     ```
-    $ tf plan
-    $ tf apply
+    $ terraform plan
+    $ terraform apply
     ```
 
 1. Go to GitHub

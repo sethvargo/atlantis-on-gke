@@ -57,8 +57,8 @@ resource "google_compute_firewall" "default" {
 
 resource "google_compute_instance" "default" {
   name         = "demo"
-  machine_type = "${var.instance_type}"
-  zone         = "${var.zone}"
+  machine_type = "n1-highcpu-2"
+  zone         = "us-east4-b"
 
   can_ip_forward            = "true"
   allow_stopping_for_update = "true"

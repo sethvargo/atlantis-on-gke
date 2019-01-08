@@ -1,11 +1,11 @@
-provider "kubernetes" {
-  host     = "${google_container_cluster.cluster.endpoint}"
-  username = "${google_container_cluster.cluster.master_auth.0.username}"
-  password = "${google_container_cluster.cluster.master_auth.0.password}"
+data "google_client_config" "current" {}
 
-  client_certificate     = "${base64decode(google_container_cluster.cluster.master_auth.0.client_certificate)}"
-  client_key             = "${base64decode(google_container_cluster.cluster.master_auth.0.client_key)}"
+provider "kubernetes" {
+  load_config_file = false
+  host             = "${google_container_cluster.cluster.endpoint}"
+
   cluster_ca_certificate = "${base64decode(google_container_cluster.cluster.master_auth.0.cluster_ca_certificate)}"
+  token                  = "${data.google_client_config.current.access_token}"
 }
 
 resource "kubernetes_secret" "tls" {
@@ -39,7 +39,7 @@ resource "kubernetes_pod" "pod" {
 
     container {
       name  = "atlantis"
-      image = "runatlantis/atlantis:${var.atlantis_version}"
+      image = "${var.atlantis_container}"
       args  = ["server"]
 
       port {

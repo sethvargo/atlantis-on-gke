@@ -13,13 +13,13 @@ resource "github_repository" "repo" {
   homepage_url = "https://www.runatlantis.io/"
 
   private       = "${var.github_repo_is_private}"
-  has_issues    = false
-  has_wiki      = false
   has_downloads = false
+  has_issues    = false
   has_projects  = false
+  has_wiki      = false
 
   allow_merge_commit = false
-  allow_squash_merge = false
+  allow_squash_merge = true
   allow_rebase_merge = true
 }
 

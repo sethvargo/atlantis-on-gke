@@ -1,11 +1,10 @@
 provider "google" {
   region  = "${var.region}"
-  zone    = "${var.zone}"
   project = "${var.project}"
 }
 
 resource "random_id" "random" {
-  prefix      = "terraform-"
+  prefix      = "${var.project_prefix}"
   byte_length = "8"
 }
 
@@ -63,30 +62,6 @@ resource "google_storage_bucket_iam_member" "sa-to-bucket" {
   member = "serviceAccount:${google_service_account.account.email}"
 }
 
-resource "google_container_cluster" "cluster" {
-  name    = "terraform-atlantis"
-  project = "${google_project.project.project_id}"
-  zone    = "${var.zone}"
-
-  min_master_version = "${var.kubernetes_version}"
-  node_version       = "${var.kubernetes_version}"
-
-  initial_node_count = "${var.num_servers}"
-
-  node_config {
-    machine_type    = "${var.instance_type}"
-    service_account = "${google_service_account.account.email}"
-
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform",
-    ]
-
-    tags = ["atlantis", "terraform"]
-  }
-
-  depends_on = ["google_project_service.service"]
-}
-
 resource "google_compute_address" "address" {
   name    = "load-balancer"
   region  = "${var.region}"
@@ -95,97 +70,77 @@ resource "google_compute_address" "address" {
   depends_on = ["google_project_service.service"]
 }
 
-resource "random_id" "encryption-key" {
-  byte_length = "32"
+data "google_container_engine_versions" "versions" {
+  project = "${google_project.project.project_id}"
+  region  = "${var.region}"
 }
 
-resource "tls_private_key" "ca" {
-  algorithm = "RSA"
-  rsa_bits  = "2048"
-}
+resource "google_container_cluster" "cluster" {
+  name    = "terraform-atlantis"
+  project = "${google_project.project.project_id}"
+  region  = "${var.region}"
 
-resource "tls_self_signed_cert" "ca" {
-  key_algorithm   = "${tls_private_key.ca.algorithm}"
-  private_key_pem = "${tls_private_key.ca.private_key_pem}"
+  min_master_version = "${data.google_container_engine_versions.versions.latest_master_version}"
+  node_version       = "${data.google_container_engine_versions.versions.latest_node_version}"
 
-  subject {
-    common_name  = "ca.local"
-    organization = "Atlantis"
+  logging_service    = "${var.kubernetes_logging_service}"
+  monitoring_service = "${var.kubernetes_monitoring_service}"
+
+  initial_node_count = "${var.kubernetes_nodes_per_zone}"
+
+  node_config {
+    machine_type    = "${var.kubernetes_instance_type}"
+    service_account = "${google_service_account.account.email}"
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform",
+    ]
+
+    tags = ["atlantis", "terraform"]
+
+    workload_metadata_config {
+      node_metadata = "SECURE"
+    }
   }
 
-  validity_period_hours = 8760
-  is_ca_certificate     = true
+  addons_config {
+    kubernetes_dashboard {
+      disabled = true
+    }
 
-  allowed_uses = [
-    "cert_signing",
-    "digital_signature",
-    "key_encipherment",
+    network_policy_config {
+      disabled = false
+    }
+  }
+
+  master_auth {
+    username = ""
+    password = ""
+
+    client_certificate_config {
+      issue_client_certificate = false
+    }
+  }
+
+  network_policy {
+    enabled = true
+  }
+
+  maintenance_policy {
+    daily_maintenance_window {
+      start_time = "${var.kubernetes_daily_maintenance_window}"
+    }
+  }
+
+  depends_on = [
+    "google_project_service.service",
+    "google_storage_bucket_iam_member.sa-to-bucket",
+    "google_project_iam_member.service-account",
   ]
-
-  provisioner "local-exec" {
-    command = "echo '${self.cert_pem}' > ../tls/ca.pem && chmod 0600 ../tls/ca.pem"
-  }
-}
-
-resource "tls_private_key" "key" {
-  algorithm = "RSA"
-  rsa_bits  = "2048"
-
-  provisioner "local-exec" {
-    command = "echo '${self.private_key_pem}' > ../tls/tls.key && chmod 0600 ../tls/tls.key"
-  }
-}
-
-resource "tls_cert_request" "request" {
-  key_algorithm   = "${tls_private_key.key.algorithm}"
-  private_key_pem = "${tls_private_key.key.private_key_pem}"
-
-  dns_names = [
-    "atlantis",
-    "atlantis.local",
-    "atlantis.default.svc.cluster.local",
-    "localhost",
-  ]
-
-  ip_addresses = [
-    "127.0.0.1",
-    "${google_compute_address.address.address}",
-  ]
-
-  subject {
-    common_name  = "atlantis.local"
-    organization = "Atlantis"
-  }
-}
-
-resource "tls_locally_signed_cert" "cert" {
-  cert_request_pem = "${tls_cert_request.request.cert_request_pem}"
-
-  ca_key_algorithm   = "${tls_private_key.ca.algorithm}"
-  ca_private_key_pem = "${tls_private_key.ca.private_key_pem}"
-  ca_cert_pem        = "${tls_self_signed_cert.ca.cert_pem}"
-
-  validity_period_hours = 8760
-
-  allowed_uses = [
-    "cert_signing",
-    "client_auth",
-    "digital_signature",
-    "key_encipherment",
-    "server_auth",
-  ]
-
-  provisioner "local-exec" {
-    command = "echo '${self.cert_pem}' > ../tls/tls.cert && echo '${tls_self_signed_cert.ca.cert_pem}' >> ../tls/tls.cert && chmod 0600 ../tls/tls.cert"
-  }
 }
 
 output "project" {
   value = "${google_project.project.project_id}"
-}
-
-output "zone" {
-  value = "${var.zone}"
 }
 
 output "region" {
