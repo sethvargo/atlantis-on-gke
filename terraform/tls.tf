@@ -8,8 +8,8 @@ resource "tls_private_key" "ca" {
 }
 
 resource "tls_self_signed_cert" "ca" {
-  key_algorithm   = "${tls_private_key.ca.algorithm}"
-  private_key_pem = "${tls_private_key.ca.private_key_pem}"
+  key_algorithm   = tls_private_key.ca.algorithm
+  private_key_pem = tls_private_key.ca.private_key_pem
 
   subject {
     common_name  = "ca.local"
@@ -40,8 +40,8 @@ resource "tls_private_key" "key" {
 }
 
 resource "tls_cert_request" "request" {
-  key_algorithm   = "${tls_private_key.key.algorithm}"
-  private_key_pem = "${tls_private_key.key.private_key_pem}"
+  key_algorithm   = tls_private_key.key.algorithm
+  private_key_pem = tls_private_key.key.private_key_pem
 
   dns_names = [
     "atlantis",
@@ -52,7 +52,7 @@ resource "tls_cert_request" "request" {
 
   ip_addresses = [
     "127.0.0.1",
-    "${google_compute_address.address.address}",
+    google_compute_address.address.address,
   ]
 
   subject {
@@ -62,11 +62,11 @@ resource "tls_cert_request" "request" {
 }
 
 resource "tls_locally_signed_cert" "cert" {
-  cert_request_pem = "${tls_cert_request.request.cert_request_pem}"
+  cert_request_pem = tls_cert_request.request.cert_request_pem
 
-  ca_key_algorithm   = "${tls_private_key.ca.algorithm}"
-  ca_private_key_pem = "${tls_private_key.ca.private_key_pem}"
-  ca_cert_pem        = "${tls_self_signed_cert.ca.cert_pem}"
+  ca_key_algorithm   = tls_private_key.ca.algorithm
+  ca_private_key_pem = tls_private_key.ca.private_key_pem
+  ca_cert_pem        = tls_self_signed_cert.ca.cert_pem
 
   validity_period_hours = 8760
 
