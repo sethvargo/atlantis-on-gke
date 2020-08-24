@@ -10,7 +10,7 @@ EOF
 
 variable "project" {
   type    = string
-  default = "jangomart"
+  default = ""
 
   description = <<EOF
 Project ID where Terraform is authenticated to run to create additional
@@ -40,7 +40,7 @@ EOF
 
 variable "org_id" {
   type = string
-  default = "3928071551"
+
   description = <<EOF
 GCP Organization ID.
 EOF
@@ -85,7 +85,7 @@ EOF
 
 variable "atlantis_github_user" {
   type = string
-  default = "jagrusy"
+
   description = <<EOF
 GitHub username for Atlantis.
 EOF
@@ -103,7 +103,7 @@ EOF
 
 variable "atlantis_repo_whitelist" {
   type = string
-  default = "github.com/jangomart/*"
+
   description = <<EOF
 Whitelist for what repos Atlantis will operate on. This is specified as the
 full repo URL or a wildcard splay (e.g. github.com/sethvargo-demos/*).
@@ -126,7 +126,6 @@ EOF
 
 variable "github_organization" {
   type = string
-  default = "jangomart"
 
   description = <<EOF
 GitHub organization to create demo repo in. This will not work with a
