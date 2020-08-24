@@ -14,8 +14,8 @@ resource "kubernetes_secret" "tls" {
   }
 
   data {
-    "tls.crt" = "${tls_locally_signed_cert.cert.cert_pem}"
-    "tls.key" = "${tls_private_key.key.private_key_pem}"
+    tls_crt = "${tls_locally_signed_cert.cert.cert_pem}"
+    tls_key = "${tls_private_key.key.private_key_pem}"
   }
 }
 
@@ -85,12 +85,12 @@ resource "kubernetes_pod" "pod" {
 
       env {
         name  = "ATLANTIS_SSL_CERT_FILE"
-        value = "/etc/atlantis/tls/tls.crt"
+        value = "/etc/atlantis/tls/tls_crt"
       }
 
       env {
         name  = "ATLANTIS_SSL_KEY_FILE"
-        value = "/etc/atlantis/tls/tls.key"
+        value = "/etc/atlantis/tls/tls_key"
       }
 
       env {

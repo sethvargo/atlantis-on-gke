@@ -6,8 +6,8 @@ resource "null_resource" "demo" {
   }
 
   depends_on = [
-    "google_project_iam_member.service-account",
-    "google_storage_bucket_iam_member.sa-to-bucket",
+    google_project_iam_member.service-account,
+    google_storage_bucket_iam_member.sa-to-bucket,
   ]
 
   provisioner "local-exec" {

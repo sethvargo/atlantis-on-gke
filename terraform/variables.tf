@@ -1,6 +1,6 @@
 variable "region" {
-  type    = "string"
-  default = "us-east4"
+  type    = string
+  default = "us-east1"
 
   description = <<EOF
 Region in which to create the cluster and run Atlantis.
@@ -8,7 +8,7 @@ EOF
 }
 
 variable "project" {
-  type    = "string"
+  type    = string
   default = ""
 
   description = <<EOF
@@ -18,7 +18,7 @@ EOF
 }
 
 variable "project_prefix" {
-  type    = "string"
+  type    = string
   default = "atlantis-"
 
   description = <<EOF
@@ -27,7 +27,7 @@ EOF
 }
 
 variable "billing_account" {
-  type = "string"
+  type = string
 
   description = <<EOF
 Billing account ID.
@@ -35,7 +35,7 @@ EOF
 }
 
 variable "org_id" {
-  type = "string"
+  type = string
 
   description = <<EOF
 Organization ID.
@@ -43,7 +43,7 @@ EOF
 }
 
 variable "project_services" {
-  type = "list"
+  type = list
 
   default = [
     "container.googleapis.com",
@@ -55,7 +55,7 @@ variable "project_services" {
 }
 
 variable "storage_bucket_roles" {
-  type = "list"
+  type = list
 
   default = [
     "roles/storage.legacyBucketReader",
@@ -68,7 +68,7 @@ variable "storage_bucket_roles" {
 # --------
 
 variable "atlantis_container" {
-  type    = "string"
+  type    = string
   default = "runatlantis/atlantis:latest"
 
   description = <<EOF
@@ -78,7 +78,7 @@ EOF
 }
 
 variable "atlantis_github_user" {
-  type = "string"
+  type = string
 
   description = <<EOF
 GitHub username for Atlantis.
@@ -86,7 +86,7 @@ EOF
 }
 
 variable "atlantis_github_user_token" {
-  type = "string"
+  type = string
 
   description = <<EOF
 GitHub token for Atlantis user.
@@ -94,7 +94,7 @@ EOF
 }
 
 variable "atlantis_repo_whitelist" {
-  type = "string"
+  type = string
 
   description = <<EOF
 Whitelist for what repos Atlantis will operate on. This is specified as the
@@ -107,7 +107,7 @@ EOF
 # ------
 
 variable "github_token" {
-  type = "string"
+  type = string
 
   description = <<EOF
 GitHub token with permissions to create the demo repo.
@@ -115,7 +115,7 @@ EOF
 }
 
 variable "github_organization" {
-  type = "string"
+  type = string
 
   description = <<EOF
 GitHub organization to create demo repo in. This will not work with a
@@ -124,7 +124,7 @@ EOF
 }
 
 variable "github_repo_is_private" {
-  type    = "string"
+  type    = string
   default = "true"
 
   description = <<EOF
@@ -137,7 +137,7 @@ EOF
 # --------------
 
 variable "kubernetes_instance_type" {
-  type    = "string"
+  type    = string
   default = "n1-standard-1"
 
   description = <<EOF
@@ -146,7 +146,7 @@ EOF
 }
 
 variable "kubernetes_nodes_per_zone" {
-  type    = "string"
+  type    = string
   default = "1"
 
   description = <<EOF
@@ -157,7 +157,7 @@ EOF
 }
 
 variable "kubernetes_logging_service" {
-  type    = "string"
+  type    = string
   default = "logging.googleapis.com/kubernetes"
 
   description = <<EOF
@@ -167,7 +167,7 @@ EOF
 }
 
 variable "kubernetes_monitoring_service" {
-  type    = "string"
+  type    = string
   default = "monitoring.googleapis.com/kubernetes"
 
   description = <<EOF
@@ -177,7 +177,7 @@ EOF
 }
 
 variable "kubernetes_daily_maintenance_window" {
-  type    = "string"
+  type    = string
   default = "06:00"
 
   description = <<EOF

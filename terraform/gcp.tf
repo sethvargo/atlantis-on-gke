@@ -52,7 +52,7 @@ resource "google_storage_bucket" "bucket" {
     enabled = true
   }
 
-  depends_on = ["google_project_service.service"]
+  depends_on = [google_project_service.service]
 }
 
 resource "google_storage_bucket_iam_member" "sa-to-bucket" {
