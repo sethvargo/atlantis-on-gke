@@ -1,6 +1,6 @@
 provider "github" {
-  token        = "${var.github_token}"
-  organization = "${var.github_organization}"
+  token        = var.github_token
+  organization = var.github_organization
 }
 
 resource "random_id" "webhook" {
@@ -8,11 +8,11 @@ resource "random_id" "webhook" {
 }
 
 resource "github_repository" "repo" {
-  name         = "${random_id.random.hex}"
+  name         = random_id.random.hex
   description  = "Terraform Atlantis Demo"
   homepage_url = "https://www.runatlantis.io/"
 
-  private       = "${var.github_repo_is_private}"
+  private       = var.github_repo_is_private
   has_downloads = false
   has_issues    = false
   has_projects  = false
@@ -24,14 +24,13 @@ resource "github_repository" "repo" {
 }
 
 resource "github_repository_webhook" "hook" {
-  name       = "web"
-  repository = "${github_repository.repo.name}"
+  repository = github_repository.repo.name
 
   configuration {
     url          = "https://${google_compute_address.address.address}/events"
     content_type = "application/json"
     insecure_ssl = true
-    secret       = "${random_id.webhook.hex}"
+    secret       = random_id.webhook.hex
   }
 
   events = [
@@ -43,10 +42,11 @@ resource "github_repository_webhook" "hook" {
 
   lifecycle {
     # The secret is saved as ******* in the state
-    ignore_changes = ["configuration.secret"]
+    ignore_changes = [configuration[0].secret]
   }
 }
 
 output "repository" {
-  value = "${github_repository.repo.html_url}"
+  value = github_repository.repo.html_url
 }
+

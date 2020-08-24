@@ -1,11 +1,14 @@
-data "google_client_config" "current" {}
+data "google_client_config" "current" {
+}
 
 provider "kubernetes" {
   load_config_file = false
-  host             = "${google_container_cluster.cluster.endpoint}"
+  host             = google_container_cluster.cluster.endpoint
 
-  cluster_ca_certificate = "${base64decode(google_container_cluster.cluster.master_auth.0.cluster_ca_certificate)}"
-  token                  = "${data.google_client_config.current.access_token}"
+  cluster_ca_certificate = base64decode(
+    google_container_cluster.cluster.master_auth[0].cluster_ca_certificate,
+  )
+  token = data.google_client_config.current.access_token
 }
 
 resource "kubernetes_secret" "tls" {
@@ -13,9 +16,9 @@ resource "kubernetes_secret" "tls" {
     name = "tls"
   }
 
-  data {
-    tls_crt = "${tls_locally_signed_cert.cert.cert_pem}"
-    tls_key = "${tls_private_key.key.private_key_pem}"
+  data = {
+    "tls.crt" = tls_locally_signed_cert.cert.cert_pem
+    "tls.key" = tls_private_key.key.private_key_pem
   }
 }
 
@@ -23,7 +26,7 @@ resource "kubernetes_pod" "pod" {
   metadata {
     name = "atlantis"
 
-    labels {
+    labels = {
       app = "atlantis"
     }
   }
@@ -39,7 +42,7 @@ resource "kubernetes_pod" "pod" {
 
     container {
       name  = "atlantis"
-      image = "${var.atlantis_container}"
+      image = var.atlantis_container
       args  = ["server"]
 
       port {
@@ -65,42 +68,42 @@ resource "kubernetes_pod" "pod" {
 
       env {
         name  = "ATLANTIS_GH_USER"
-        value = "${var.atlantis_github_user}"
+        value = var.atlantis_github_user
       }
 
       env {
         name  = "ATLANTIS_GH_TOKEN"
-        value = "${var.atlantis_github_user_token}"
+        value = var.atlantis_github_user_token
       }
 
       env {
         name  = "ATLANTIS_GH_WEBHOOK_SECRET"
-        value = "${random_id.webhook.hex}"
+        value = random_id.webhook.hex
       }
 
       env {
         name  = "ATLANTIS_REPO_WHITELIST"
-        value = "${var.atlantis_repo_whitelist}"
+        value = var.atlantis_repo_whitelist
       }
 
       env {
         name  = "ATLANTIS_SSL_CERT_FILE"
-        value = "/etc/atlantis/tls/tls_crt"
+        value = "/etc/atlantis/tls/tls.crt"
       }
 
       env {
         name  = "ATLANTIS_SSL_KEY_FILE"
-        value = "/etc/atlantis/tls/tls_key"
+        value = "/etc/atlantis/tls/tls.key"
       }
 
       env {
         name  = "GOOGLE_ENCRYPTION_KEY"
-        value = "${random_id.encryption-key.b64_std}"
+        value = random_id.encryption-key.b64_std
       }
 
       env {
         name  = "GOOGLE_PROJECT"
-        value = "${google_project.project.name}"
+        value = var.project
       }
 
       resources {
@@ -139,10 +142,10 @@ resource "kubernetes_service" "service" {
   spec {
     type = "LoadBalancer"
 
-    load_balancer_ip = "${google_compute_address.address.address}"
+    load_balancer_ip = google_compute_address.address.address
 
-    selector {
-      app = "${kubernetes_pod.pod.metadata.0.labels.app}"
+    selector = {
+      app = kubernetes_pod.pod.metadata[0].labels.app
     }
 
     port {
@@ -157,3 +160,4 @@ resource "kubernetes_service" "service" {
 output "url" {
   value = "https://${google_compute_address.address.address}"
 }
+

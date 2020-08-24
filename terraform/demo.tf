@@ -1,8 +1,8 @@
 resource "null_resource" "demo" {
-  triggers {
-    google_storage_bucket = "${google_storage_bucket.bucket.name}"
-    credentials           = "${md5(google_service_account_key.key.private_key)}"
-    encryption_key        = "${md5(random_id.encryption-key.b64_std)}"
+  triggers = {
+    google_storage_bucket = google_storage_bucket.bucket.name
+    credentials           = md5(google_service_account_key.key.private_key)
+    encryption_key        = md5(random_id.encryption-key.b64_std)
   }
 
   depends_on = [
@@ -29,7 +29,7 @@ EOH
 cat > ../demo/env.sh <<"EOH"
 export GOOGLE_ENCRYPTION_KEY="${random_id.encryption-key.b64_std}"
 export GOOGLE_CREDENTIALS="credentials.json"
-export GOOGLE_PROJECT="${google_project.project.name}"
+export GOOGLE_PROJECT="${var.project}"
 EOH
 
 cat > ../demo/state.tf <<"EOH"
@@ -88,7 +88,7 @@ cd ../demo
 
 GOOGLE_ENCRYPTION_KEY="${random_id.encryption-key.b64_std}" \
 GOOGLE_CREDENTIALS="credentials.json" \
-GOOGLE_PROJECT="${google_project.project.name}" \
+GOOGLE_PROJECT="${var.project}" \
 terraform init
 
 rm -rf .git
@@ -98,5 +98,7 @@ git add .
 git commit -m "Initial commit"
 git push -u -f origin master
 EOF
+
   }
 }
+
