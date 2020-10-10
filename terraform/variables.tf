@@ -3,7 +3,7 @@ variable "region" {
   default = "us-central1"
 
   description = <<EOF
-Region in which to create the cluster and run Atlantis.
+GCP Region in which Atlantis will run
 EOF
 
 }
@@ -13,7 +13,7 @@ variable "project" {
   default = ""
 
   description = <<EOF
-Project ID where Terraform is authenticated to run to create additional
+Project ID of the project that Terraform is authenticated to run in to create additional
 projects.
 EOF
 
@@ -24,7 +24,7 @@ variable "project_prefix" {
   default = "atlantis-"
 
   description = <<EOF
-String value to prefix the generated project ID with.
+Prefix value for projects that are created by Atlantis
 EOF
 
 }
@@ -33,7 +33,7 @@ variable "billing_account" {
   type = string
 
   description = <<EOF
-GCP Billing account ID.
+GCP Billing account ID
 EOF
 
 }
@@ -42,7 +42,7 @@ variable "org_id" {
   type = string
 
   description = <<EOF
-GCP Organization ID.
+GCP Organization ID
 EOF
 
 }
@@ -87,7 +87,7 @@ variable "atlantis_github_user" {
   type = string
 
   description = <<EOF
-GitHub username for Atlantis.
+The username that Atlantis will run as on Github. 
 EOF
 
 }
@@ -96,7 +96,7 @@ variable "atlantis_github_user_token" {
   type = string
 
   description = <<EOF
-GitHub token for Atlantis user.
+The github access token for the user that Atlantis will run as
 EOF
 
 }
@@ -105,7 +105,7 @@ variable "atlantis_repo_whitelist" {
   type = string
 
   description = <<EOF
-Whitelist for what repos Atlantis will operate on. This is specified as the
+Whitelist which repositories Atlantis can run on. This is specified as the
 full repo URL or a wildcard splay (e.g. github.com/sethvargo-demos/*).
 EOF
 
@@ -119,7 +119,7 @@ variable "github_token" {
   type = string
 
   description = <<EOF
-GitHub token with permissions to create the demo repo.
+GitHub token with permissions for Terraform to create the demo repo 
 EOF
 
 }
